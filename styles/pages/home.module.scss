@@ -1,0 +1,14 @@
+.container {
+  padding: 10px 20px;
+}
+
+.image_slider_container {
+  margin: 0 auto;
+  // width: 100%;
+}
+
+.image_slider_container .slick-prev:before,
+.image_slider_container .slick-next:before {
+  // background-color: ;
+  font-size: medium;
+}
