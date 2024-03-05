@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Box from "@mui/material/Box";
 
 export const HeaderWrap = styled(Box)`
-  background: ${primaryColors.white};
+  background: #FFF5EE;
   box-shadow: 0px 4px 58px rgba(0, 0, 0, 0.07);
   .MuiToolbar-root {
     min-height: auto;
@@ -16,6 +16,7 @@ export const HeaderWrap = styled(Box)`
     button {
       padding: 11px 42px;
       min-width: auto;
+    
     }
     .MuiBadge-badge {
       right: 4px;
@@ -24,7 +25,7 @@ export const HeaderWrap = styled(Box)`
       height: 10px;
     }
     .cart_icon{
-      margin-right: 18px;
+      margin-right: 25px;
     }
   }
 

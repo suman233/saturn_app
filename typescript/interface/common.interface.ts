@@ -1,4 +1,3 @@
-
 export enum HttpStatusCode {
   /**
    * The server has received the request headers and the client should proceed to send the request body
@@ -374,7 +373,6 @@ export enum HttpStatusCode {
   NetworkAuthenticationRequired = 511,
 }
 
-
 export interface CommonMuiInputProps {
   error?: boolean;
   label?: string;
@@ -388,15 +386,19 @@ export interface CommonMuiInputProps {
 }
 
 export interface IFormInput {
+  full_name: string;
   email: string;
+  birth_year: number;
+  birth_month: number;
+  birth_date: number;
+  birth_hour: number;
+  birth_minute: number;
+  birth_meridian: string;
+  birth_place: string;
+  current_location: string;
   password: string;
-  fullName: string;
-  username: string;
-  phone: Number;
-  bio: string;
-  first_name: string;
-  last_name: string;
-  country_code: string
+  lat: number;
+  lon: number;
 }
 
 export interface ButtonType {
@@ -425,39 +427,37 @@ export type StatusCodes = `${Extract<
 >}` extends `${infer N extends number}`
   ? N
   : never;
-  export interface BaseApiResponse {
-    message: string;
-    status: StatusCodes;
-    type: string;
-    token: string
-  }
-  
-  export type ActiveInactiveStatus = "Inactive" | "Active";
-  
-  export type UserData = {
-    first_name: string;
-    last_name: string;
-    fullName: string;
-    role: string;
-    countryCode: string;
-    phone: string;
-    email: string;
-    password: string;
-    profile_image: string;
-    workspace_name: string;
-    workspace_slug: string;
-    isEmailVerified: boolean;
-    isFreeUser: boolean;
-    otp: string;
-    signupType: string;
-    signupCompleted: boolean;
-    status: ActiveInactiveStatus;
-    isDeleted: boolean;
-    _id: string;
-    createdAt: string;
-    updatedAt: string;
-  } | null;
-  
+export interface BaseApiResponse {
+  message: string;
+  status: StatusCodes;
+  type: string;
+  token: string;
+}
 
-export { };
+export type ActiveInactiveStatus = "Inactive" | "Active";
 
+export type UserData = {
+  first_name: string;
+  last_name: string;
+  fullName: string;
+  role: string;
+  countryCode: string;
+  phone: string;
+  email: string;
+  password: string;
+  profile_image: string;
+  workspace_name: string;
+  workspace_slug: string;
+  isEmailVerified: boolean;
+  isFreeUser: boolean;
+  otp: string;
+  signupType: string;
+  signupCompleted: boolean;
+  status: ActiveInactiveStatus;
+  isDeleted: boolean;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+} | null;
+
+export {};

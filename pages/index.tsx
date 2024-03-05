@@ -95,7 +95,9 @@ export default function Home() {
           );
         })}
       </Carousel>
-      <Container sx={{ my: 10 }}>
+      <section
+        style={{ marginTop: 10, marginBottom: 60, backgroundColor: "#FEF9F6" }}
+      >
         <Typography
           sx={{
             color: "#0b538e",
@@ -108,13 +110,17 @@ export default function Home() {
         </Typography>
         <Grid container rowSpacing={3} sx={{ mt: 4, textAlign: "center" }}>
           <Grid item md={4}>
-            <img
-              src={`${data?.what_help_section1_image_path}`}
-              alt=""
-              height={600}
-              width={"50%"}
-              style={{ borderRadius: "50%" }}
-            />
+            <div >
+              <img
+                src={`${data?.what_help_section1_image_path}`}
+                alt=""
+                height={600}
+                width={"50%"}
+                style={{ padding: "30px", borderRadius: "50%", 
+                backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}
+              />
+            </div>
+
             <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
               {data?.what_help_section1_title}
             </Typography>
@@ -125,8 +131,9 @@ export default function Home() {
               alt=""
               height={600}
               width={"50%"}
-              style={{ borderRadius: "50%" }}
-            />
+              style={{ padding: "30px", borderRadius: "50%", 
+              backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}           
+               />
             <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
               {data?.what_help_section2_title}
             </Typography>
@@ -137,14 +144,15 @@ export default function Home() {
               alt=""
               height={600}
               width={"50%"}
-              style={{ borderRadius: "50%" }}
-            />
+              style={{ padding: "30px", borderRadius: "50%", 
+              backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}    
+              />
             <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
               {data?.what_help_section3_title}
             </Typography>
           </Grid>
         </Grid>
-      </Container>
+      </section>
       <Container sx={{ mb: 10 }}>
         <Paper
           sx={{
@@ -176,7 +184,7 @@ export default function Home() {
             }}
           />
           <CustomButtonPrimary
-            onClick={() => router.push(`${data?.birth_chart_report_link}`)}
+            onClick={() => router.push(`/birthreport`)}
             type="button"
             variant="contained"
             color="primary"
@@ -273,6 +281,7 @@ export default function Home() {
                     marginTop: 5,
                     paddingLeft: "20px",
                     paddingRight: "20px",
+                    fontStyle: "italic",
                   }}
                 />
                 <Typography sx={{ fontSize: "22px", color: "#2C4867", mt: 3 }}>
@@ -300,7 +309,7 @@ export default function Home() {
                   {data?.what_client_say_title3}
                 </Typography>
                 <Rating defaultValue={5} readOnly sx={{ my: 1 }} />
-                
+
                 <Typography
                   sx={{
                     fontSize: "22px",
@@ -322,6 +331,7 @@ export default function Home() {
                     marginTop: 5,
                     marginLeft: 6,
                     marginRight: 6,
+                    fontStyle: "italic",
                   }}
                 />
                 <Typography sx={{ fontSize: "22px", color: "#2C4867", mt: 3 }}>

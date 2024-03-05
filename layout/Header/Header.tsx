@@ -112,8 +112,8 @@ export default function Header() {
         elevation={0}
         className="headerContainer"
       >
-        <Container fixed maxWidth={'xl'}>
-          <Toolbar>
+        <Container maxWidth={'xl'} >
+          <Toolbar >
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -176,6 +176,7 @@ export default function Header() {
                 type="button"
                 variant="contained"
                 color="primary"
+                onClick={()=>router.push('/auth/login')}
               >
                 <Typography>Login</Typography>
               </CustomButtonPrimary>

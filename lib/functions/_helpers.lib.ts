@@ -61,6 +61,8 @@ export const globalCatchWarning = (response: AxiosResponse<BaseApiResponse>) => 
   });
 };
 
+export const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/;
+
 export const globalCatchError = (error: AxiosError<BaseApiResponse>) => {
   let message = "Something went wrong";
   if (error.response?.data?.message) {

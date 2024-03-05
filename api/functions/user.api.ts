@@ -5,7 +5,7 @@ import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 
 export const signUpMutation = async (body: IFormInput) => {
-  const res = await axiosInstance.post<IgetSignUpQuery>(
+  const res = await axiosInstance.post(
     endpoints.auth.signup,
     body
   );
@@ -24,10 +24,10 @@ export const GetProfileDetails = async () => {
   );
   return res;
 };
-export const signUpProfileMutation = async (body: IFormInput) => {
-  const res = await axiosInstance.post<IgetSignUpQuery>(
-    endpoints.auth.signUpProfile,
-    body
-  );
-  return res;
-};
+// export const signUpProfileMutation = async (body: IFormInput) => {
+//   const res = await axiosInstance.post<IgetSignUpQuery>(
+//     endpoints.auth.signUpProfile,
+//     body
+//   );
+//   return res;
+// };
