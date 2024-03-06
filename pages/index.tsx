@@ -12,6 +12,9 @@ import { useRouter } from "next/router";
 import Carousel from "react-material-ui-carousel";
 import Slider from "react-slick";
 import styles from "@/styles/pages/home.module.scss";
+import { deleteCookie, getCookie } from "cookies-next";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const style = {
   position: "absolute",
@@ -55,6 +58,7 @@ export default function Home() {
 
   console.log("cms", data);
   const bannerUrl = "https://admin.yoursaturn.com/storage/cms";
+
   return (
     <Wrapper>
       {/* <Typography>Saturn</Typography> */}
@@ -98,60 +102,78 @@ export default function Home() {
       <section
         style={{ marginTop: 10, marginBottom: 60, backgroundColor: "#FEF9F6" }}
       >
-        <Typography
-          sx={{
-            color: "#0b538e",
-            fontWeight: "bold",
-            fontSize: "60px",
-            textAlign: "center",
-          }}
-        >
-          {data?.what_help_section_title}
-        </Typography>
-        <Grid container rowSpacing={3} sx={{ mt: 4, textAlign: "center" }}>
-          <Grid item md={4}>
-            <div >
-              <img
-                src={`${data?.what_help_section1_image_path}`}
-                alt=""
-                height={600}
-                width={"50%"}
-                style={{ padding: "30px", borderRadius: "50%", 
-                backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}
-              />
-            </div>
+        <Container >
+          <Typography
+            sx={{
+              color: "#2C4867",
+              fontSize: "50px",
+              textAlign: "center",
+              
+            }}
+          >
+            {data?.what_help_section_title}
+          </Typography>
+          <Grid container rowSpacing={3} sx={{ mt: 4, textAlign: "center" }}>
+            <Grid item md={4}>
+              <Box sx={{ '&:hover': {
+                    backgroundImage: "black",
+                    backgroundColor:'white'
+                  },}}>
+                <img
+                  src={`${data?.what_help_section1_image_path}`}
+                  alt=""
+                  // height={300}
+                  width={"40%"}
+                  style={{
+                    padding: "30px",
+                    borderRadius: "50%",
+                    color:'white',
+                    backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)",
+                   
+                  }}
+                />
+              </Box>
 
-            <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
-              {data?.what_help_section1_title}
-            </Typography>
-          </Grid>
-          <Grid item md={4}>
-            <img
-              src={`${data?.what_help_section2_image_path}`}
-              alt=""
-              height={600}
-              width={"50%"}
-              style={{ padding: "30px", borderRadius: "50%", 
-              backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}           
-               />
-            <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
-              {data?.what_help_section2_title}
-            </Typography>
-          </Grid>
-          <Grid item md={4}>
-            <img
-              src={`${data?.what_help_section3_image_path}`}
-              alt=""
-              height={600}
-              width={"50%"}
-              style={{ padding: "30px", borderRadius: "50%", 
-              backgroundImage: "linear-gradient(to right, #F8CAA6 , #FDD893)" }}    
+              <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
+                {data?.what_help_section1_title}
+              </Typography>
+            </Grid>
+            <Grid item md={4}>
+              <img
+                src={`${data?.what_help_section2_image_path}`}
+                alt=""
+                height={500}
+                width={"40%"}
+                style={{
+                  padding: "30px",
+                  borderRadius: "50%",
+                  backgroundImage:
+                    "linear-gradient(to right, #F8CAA6 , #FDD893)",
+                }}
               />
-            <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
-              {data?.what_help_section3_title}
-            </Typography>
+              <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
+                {data?.what_help_section2_title}
+              </Typography>
+            </Grid>
+            <Grid item md={4}>
+              <img
+                src={`${data?.what_help_section3_image_path}`}
+                alt=""
+                height={500}
+                width={"40%"}
+                style={{
+                  padding: "30px",
+                  borderRadius: "50%",
+                  backgroundImage:
+                    "linear-gradient(to right, #F8CAA6 , #FDD893)",
+                }}
+              />
+              <Typography sx={{ fontSize: "20px", mt: 3, color: "#256396" }}>
+                {data?.what_help_section3_title}
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
+        </Container>
       </section>
       <Container sx={{ mb: 10 }}>
         <Paper
@@ -194,7 +216,10 @@ export default function Home() {
           </CustomButtonPrimary>
         </Paper>
       </Container>
-      <Container sx={{ my: 10 }}>
+      <section style={{ marginTop: 10, marginBottom: 20, backgroundColor: "#FEF9F6"}}>
+
+      <Container sx={{  
+      }}>
         <div className={styles.image_slider_container}>
           <Slider {...settings}>
             <div>
@@ -345,6 +370,12 @@ export default function Home() {
           </Slider>
         </div>
       </Container>
+      </section>
+
+      <section>
+        
+      </section>
+
     </Wrapper>
   );
 }

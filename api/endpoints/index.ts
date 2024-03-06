@@ -13,6 +13,8 @@ export const endpoints = {
     signup: "register",
     // signUpProfile: "user/signup",
     login:"login",
+    checkEmail: 'check-email',
+    checkMagicEmail: 'magic-link',
     profileDetails: "user",
     profileUpdate: "profile-update"
   },

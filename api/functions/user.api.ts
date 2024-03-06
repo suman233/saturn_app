@@ -1,4 +1,4 @@
-import { IFormInput } from "@/interface/common.interface";
+import { IFormInput, LoginInput } from "@/interface/common.interface";
 
 import { IgetSignUpQuery } from "@/interface/apiresp.interfaces";
 import axiosInstance from "../axiosInstance";
@@ -11,6 +11,13 @@ export const signUpMutation = async (body: IFormInput) => {
   );
   return res;
 };
+export const emailCheck = async (body: LoginInput )=>{
+  const resp= await axiosInstance.post(
+    endpoints.auth.checkMagicEmail,
+    body
+  );
+  return resp;
+}
 export const loginMutation = async (body: IFormInput) => {
   const res = await axiosInstance.post<IgetSignUpQuery>(
     endpoints.auth.login,

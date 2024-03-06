@@ -4,6 +4,16 @@ import React from "react";
 import { inputLabelClasses } from "@mui/material/InputLabel";
 import CustomButtonPrimary from "@/ui/CustomButtons/CustomButtonPrimary";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { emailCheck } from "@/api/functions/user.api";
+import * as yup from "yup";
+import validationText from "@/json/messages/validationText";
+// import { emailRegex } from "@/lib/functions/_helpers.lib";
+import emailRegex from "@/lib/regex/index";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "sonner";
+import { LoginInput } from "@/interface/common.interface";
 
 const style = {
   position: "absolute",
@@ -21,8 +31,44 @@ const style = {
   px: 4,
 };
 
+const emailSchema = yup
+  .object({
+    email: yup
+      .string()
+      .trim()
+      .required(validationText.error.enter_email)
+      .matches(emailRegex.emailRegex, validationText.error.email_format),
+  })
+  .required();
+export type LoginSchema = yup.InferType<typeof emailSchema>;
 const Login = () => {
-    const router=useRouter()
+  const router = useRouter();
+
+  const { register, handleSubmit } = useForm<LoginInput>({
+    resolver: yupResolver(emailSchema),
+  });
+  const { mutate, isPending } = useMutation({
+    mutationFn: emailCheck,
+  });
+
+  const handleEmail = (data: LoginSchema) => {
+    mutate(
+      { ...data },
+      {
+        onSuccess: (resp) => {
+          // if (resp.data.status === 200) 
+          console.log('ss', resp);
+          
+          toast.success(resp.data.message);
+        },
+        onError: (err)=>{
+          console.log(err.message);
+          toast.error(err.message)
+          
+        }
+      }
+    );
+  };
 
   return (
     <Wrapper>
@@ -67,7 +113,8 @@ const Login = () => {
 
             <Box
               component={"form"}
-              sx={{ my: 4, ml: 3, }}
+              sx={{ my: 4, ml: 3 }}
+              onSubmit={handleSubmit(handleEmail)}
             >
               <div style={{ borderBottom: "15px" }}>
                 <label style={{ color: "#617C9D" }}>
@@ -78,6 +125,7 @@ const Login = () => {
                   id="filled-size-normal"
                   variant="outlined"
                   fullWidth
+                  {...register("email")}
                   placeholder="Enter Your Email Address"
                   sx={{
                     mr: 2,
@@ -100,32 +148,43 @@ const Login = () => {
                   }}
                 />
               </div>
-              <Typography sx={{textAlign:'center', margin:'auto', mx:30, }}>
+              <Typography sx={{ textAlign: "center", margin: "auto", mx: 30 }}>
                 <Button
-                  type="button"
+                  type="submit"
                   variant="contained"
                   color="primary"
                   fullWidth
-                  sx={{ mt:3, p:2 }}
+                  sx={{ mt: 3, p: 2 }}
                 >
                   Log In
                 </Button>
               </Typography>
             </Box>
-            <Typography sx={{textAlign:'center', margin:'auto', fontSize:'30px', color:'#2C589A' }}>New To SATURN</Typography>
-            
-            <Typography sx={{textAlign:'center', margin:'auto', ml:30, mr:28 }}>
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  sx={{ mt:3, p:2 }}
-                  onClick={()=>router.push('/auth/signup')}
-                >
-                  Creaet An Account
-                </Button>
-              </Typography>
+            <Typography
+              sx={{
+                textAlign: "center",
+                margin: "auto",
+                fontSize: "30px",
+                color: "#2C589A",
+              }}
+            >
+              New To SATURN
+            </Typography>
+
+            <Typography
+              sx={{ textAlign: "center", margin: "auto", ml: 30, mr: 28 }}
+            >
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 3, p: 2 }}
+                onClick={() => router.push("/auth/signup")}
+              >
+                Creaet An Account
+              </Button>
+            </Typography>
           </Box>
         </section>
       </div>

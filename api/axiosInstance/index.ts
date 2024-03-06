@@ -19,6 +19,7 @@ axiosInstance.interceptors.request.use((config) => {
   const token = cookies[process.env.NEXT_APP_TOKEN_NAME!];
   if (token && !!config.headers) {
     config.headers["x-access-token"] = `${token}`;
+    config.params["session_id"]= `${token}`
   }
 
   return config;

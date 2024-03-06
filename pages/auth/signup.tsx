@@ -7,12 +7,15 @@ import {
   Container,
   Button,
   Paper,
+  Select,
+  MenuItem,
+  MenuList,
 } from "@mui/material";
 import React from "react";
 import * as yup from "yup";
 import emailRegex from "@/lib/regex/index";
 import InputFieldCommon from "@/ui/CommonInput/CommonInput";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
@@ -21,6 +24,8 @@ import { IFormInput } from "@/interface/common.interface";
 import { toast } from "sonner";
 import CustomButtonPrimary from "@/ui/CustomButtons/CustomButtonPrimary";
 import Datepickersection from "@/ui/Datepicker/Datepickersection";
+import { setCookie } from "cookies-next";
+// import { setCookie } from "nookies";
 
 const style = {
   position: "absolute",
@@ -64,31 +69,47 @@ const schema = yup
 
 export type RegSchema = yup.InferType<typeof schema>;
 
+const hours=[]
+
+for (let i=1; i<13; i++){
+  hours.push(i)
+}
+
+const minutes: number[]=[]
+
+for (let i=1; i<61; i++){
+  minutes.push(i)
+}
+
 const Signup = () => {
   const router = useRouter();
 
   const {
     register,
-    handleSubmit,
+    handleSubmit, control,
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
   });
 
-  const { mutate } = useMutation({
+  const { isPending: isLoading, mutate } = useMutation({
     mutationFn: signUpMutation,
   });
+
   const handleReg = (data: RegSchema) => {
     console.log("signup", data);
-
     mutate(
       { ...data },
       {
         onSuccess: (response) => {
           if (response?.data?.status === true) {
             toast.success(response?.data?.message);
-            router.push("/auth/login");
+            setCookie("usertoken", response.data.data.token);
+            router.push("/");
           }
+        },
+        onError: (err) => {
+          toast.error(err.message);
         },
       }
     );
@@ -142,12 +163,13 @@ const Signup = () => {
           <Typography
             sx={{
               textAlign: "center",
-              fontWeight: "bold",
               fontSize: "40px",
               my: 4,
+              fontStyle: "italic",
+              color: "#394F67",
             }}
           >
-            Sign UP Form
+            Step 2: Please Enter Birth Data Below
           </Typography>
           <Paper sx={{ backgroundColor: "#FFF5EE" }}>
             <form onSubmit={handleSubmit(handleReg)}>
@@ -167,101 +189,193 @@ const Signup = () => {
               </Box>
               <Box sx={{ px: 6 }}>
                 <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Your Email*
+                  Your Email Address*
                 </label>
                 <InputFieldCommon
                   required
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email Address"
                   sx={{
                     my: 1,
                   }}
                   {...register("email")}
                 />
               </Box>
-              <Box sx={{ px: 6 }}>
-                <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Year*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="number"
-                  placeholder="Birth_year"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_year")}
-                />
+              <Box
+                sx={{
+                  px: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Year*
+                  </label>
+                  <br />
+                  {/* <Controller
+                    name="birth_year"
+                    control={control}
+                    // Set default value if needed
+                    render={({ field }) => (
+                      <Select
+                        style={{
+                          width: "17vw",
+                          backgroundColor: "#f2f2f2",
+                          color: "black",
+                          overflow: "scroll",
+                        }}
+                        inputProps={{ "aria-label": "Without label" }}
+                        {...field}
+                        {...register("birth_year")}
+                      >
+                        <MenuList style={{overflowY:'auto'}}>
+
+                        {years.map((item) => (
+                          <MenuItem key={item} value={item} >
+                            {item}
+                          </MenuItem>
+                        ))}
+                        </MenuList>
+
+                      </Select>
+                    )}
+                  /> */}
+                  <InputFieldCommon
+                    required
+                    type="number"
+                    placeholder="Birth_year"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_year")}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Month*
+                  </label>
+                  <br />
+                  <InputFieldCommon
+                    required
+                    type="number"
+                    placeholder="Birth_month"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_month")}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Date*
+                  </label>
+                  <br />
+                  <InputFieldCommon
+                    required
+                    type="number"
+                    placeholder="Birth_Date"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_date")}
+                  />
+                </div>
               </Box>
-              <Box sx={{ px: 6 }}>
+              <Box
+                sx={{
+                  px: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Hour*
+                  </label>
+                  <br />
+                  <InputFieldCommon
+                    required
+                    type="number"
+                    placeholder="Birth_hour"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_hour")}
+                  />
+                </div>
+                {/* <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Minute*
+                  </label>
+                  <br />
+                  <InputFieldCommon
+                    required
+                    type="number"
+                    placeholder="Birth_minute"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_minute")}
+                  />
+                </div> */}
+                <div>
                 <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Month*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="number"
-                  placeholder="Birth_month"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_month")}
-                />
-              </Box>
-              <Box sx={{ px: 6 }}>
-                <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Date*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="number"
-                  placeholder="Birth_Date"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_date")}
-                />
-              </Box>
-              <Box sx={{ px: 6 }}>
-                <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Hour*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="number"
-                  placeholder="Birth_hour"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_hour")}
-                />
-              </Box>
-              <Box sx={{ px: 6 }}>
-                <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Minute*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="number"
-                  placeholder="Birth_minute"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_minute")}
-                />
-              </Box>
-              <Box sx={{ px: 6 }}>
-                <label htmlFor="" style={{ color: "#6185AE" }}>
-                  Birth Meridian*
-                </label>
-                <InputFieldCommon
-                  required
-                  type="text"
-                  placeholder="Birth_meridian"
-                  sx={{
-                    my: 1,
-                  }}
-                  {...register("birth_meridian")}
-                />
+                    Birth Minute*
+                  </label>
+                  <br />
+                 <Controller
+                    name="birth_minute"
+                    control={control}
+                    // Set default value if needed
+                    render={({ field }) => (
+                      <Select
+                        style={{
+                          width: "17vw",
+                          backgroundColor: "#f2f2f2",
+                          color: "black",
+                        }}
+                        inputProps={{ "aria-label": "Without label" }}
+                        {...field}
+                        {...register("birth_minute")}
+                      >
+                        <MenuList style={{maxHeight: 200, overflowY:'auto'}}>
+
+                        {minutes.map((item) => (
+                          <MenuItem key={item} value={item}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                        </MenuList>
+
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="" style={{ color: "#6185AE" }}>
+                    Birth Meridian*
+                  </label>
+                  <br />
+                  <InputFieldCommon
+                    required
+                    type="text"
+                    placeholder="Birth_meridian"
+                    sx={{
+                      my: 1,
+                      width: "30%",
+                    }}
+                    {...register("birth_meridian")}
+                  />
+                </div>
               </Box>
               <Box sx={{ px: 6 }}>
                 <label htmlFor="" style={{ color: "#6185AE" }}>
@@ -333,16 +447,21 @@ const Signup = () => {
                   {...register("lon")}
                 />
               </Box>
-              <Box sx={{ m:'auto', textAlign:'center' }}>
+              <Box sx={{ m: "auto", textAlign: "center" }}>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   sx={{
-                    margin: "auto", my:2, py:2, px:4
+                    margin: "auto",
+                    my: 2,
+                    py: 2,
+                    px: 4,
                   }}
                 >
-                  <Typography sx={{color:'white'}}>Sign Up</Typography>
+                  <Typography sx={{ color: "white" }}>
+                    {isLoading ? "Loading..." : "Sign Up"}
+                  </Typography>
                 </Button>
               </Box>
             </form>

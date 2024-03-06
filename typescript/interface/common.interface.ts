@@ -401,6 +401,10 @@ export interface IFormInput {
   lon: number;
 }
 
+export type LoginInput={
+  email: string;
+}
+
 export interface ButtonType {
   children: JSX.Element;
   variant?: "text" | "outlined" | "contained";

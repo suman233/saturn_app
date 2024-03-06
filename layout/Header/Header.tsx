@@ -27,6 +27,8 @@ import { Container } from "@mui/system";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { deleteCookie, getCookie } from "cookies-next";
+import { toast } from "sonner";
 
 // const CustomButton = dynamic(() => import("@/ui/Buttons/CustomButton"));
 
@@ -36,20 +38,20 @@ export default function Header() {
   const navItems = [
     {
       name: "Clinical studies",
-      route: "javascript:void(0)"
+      route: "javascript:void(0)",
     },
     {
       name: "The science",
-      route: "javascript:void(0)"
+      route: "javascript:void(0)",
     },
     {
       name: "Shop",
-      route: "javascript:void(0)"
+      route: "javascript:void(0)",
     },
     {
       name: "Contact us",
-      route: "javascript:void(0)"
-    }
+      route: "javascript:void(0)",
+    },
   ];
 
   // const { window } = props;
@@ -57,14 +59,17 @@ export default function Header() {
   const { userData, isLoggedIn } = useAppSelector((state) => state.userSlice);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [loggedIn, setLoggedIn] = React.useState<boolean>(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const handleLogout = () => {
-    dispatch(logout());
-    router.push("/login");
+    // dispatch(logout());
+    deleteCookie('usertoken')
+    router.push("/auth/login");
+    toast.success("Logout Successfully");
   };
 
   const drawer = (
@@ -104,16 +109,23 @@ export default function Header() {
   //   };
   // }, []);
 
+
+  const token = getCookie("usertoken");
+
+  React.useEffect(() => {
+    setLoggedIn(!!token);
+  }, [token]);
+
   return (
-    <HeaderWrap sx={{ display: "flex", }} className="main_head" >
+    <HeaderWrap sx={{ display: "flex" }} className="main_head">
       <AppBar
         component="nav"
         position="static"
         elevation={0}
         className="headerContainer"
       >
-        <Container maxWidth={'xl'} >
-          <Toolbar >
+        <Container maxWidth={"xl"}>
+          <Toolbar>
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -172,14 +184,25 @@ export default function Header() {
                   <CartIcon />
                 </Badge>
               </Box>
-              <CustomButtonPrimary
-                type="button"
-                variant="contained"
-                color="primary"
-                onClick={()=>router.push('/auth/login')}
-              >
-                <Typography>Login</Typography>
-              </CustomButtonPrimary>
+              {loggedIn ? (
+                <CustomButtonPrimary
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleLogout()}
+                >
+                  <Typography>Logout</Typography>
+                </CustomButtonPrimary>
+              ) : (
+                <CustomButtonPrimary
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={() => router.push("/auth/login")}
+                >
+                  <Typography>Login</Typography>
+                </CustomButtonPrimary>
+              )}
             </Box>
           </Toolbar>
         </Container>
@@ -190,14 +213,14 @@ export default function Header() {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true // Better open performance on mobile.
+            keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
             display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth
-            }
+              width: drawerWidth,
+            },
           }}
         >
           {drawer}
