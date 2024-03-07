@@ -15,6 +15,7 @@ export const endpoints = {
     login:"login",
     checkEmail: 'check-email',
     checkMagicEmail: 'magic-link',
+    getUser: 'magic-auth',
     profileDetails: "user",
     profileUpdate: "profile-update"
   },

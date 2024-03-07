@@ -1,87 +1,98 @@
-import Wrapper from "@/layout/wrapper/Wrapper";
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import React from "react";
-import { inputLabelClasses } from "@mui/material/InputLabel";
-import CustomButtonPrimary from "@/ui/CustomButtons/CustomButtonPrimary";
-import { useRouter } from "next/router";
-import { useMutation } from "@tanstack/react-query";
-import { emailCheck } from "@/api/functions/user.api";
+import validationText from '@/json/messages/validationText';
+import Wrapper from '@/layout/wrapper/Wrapper'
+import { Box, Button, Container, Divider, TextField, Typography } from '@mui/material'
+import React from 'react'
 import * as yup from "yup";
-import validationText from "@/json/messages/validationText";
-// import { emailRegex } from "@/lib/functions/_helpers.lib";
-import emailRegex from "@/lib/regex/index";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "sonner";
-import { LoginInput } from "@/interface/common.interface";
-import { setCookie } from "cookies-next";
+import { emailRegex } from "@/lib/functions/_helpers.lib";
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { LoginInput } from '@/interface/common.interface';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { loginMutation } from '@/api/functions/user.api';
+import { inputLabelClasses } from "@mui/material/InputLabel";
+import axiosInstance from '@/api/axiosInstance';
+import { endpoints } from '@/api/endpoints';
+import { toast } from 'sonner';
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 800,
-  height: 400,
-  // color: "white",
-  // borderTop: "4px solid orange",
-  // bgcolor: "rgba(192,192,192,0.4)",
-  // borderBottom: "2px solid #000",
-  // boxShadow: 24,
-  m: "auto",
-  px: 4,
-};
-
-const emailSchema = yup
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 800,
+    height: 400,
+    // color: "white",
+    // borderTop: "4px solid orange",
+    // bgcolor: "rgba(192,192,192,0.4)",
+    // borderBottom: "2px solid #000",
+    // boxShadow: 24,
+    m: "auto",
+    px: 4,
+  };
+  const sessionSchema = yup
   .object({
     email: yup
       .string()
       .trim()
       .required(validationText.error.enter_email)
-      .matches(emailRegex.emailRegex, validationText.error.email_format),
+      .matches(emailRegex, validationText.error.email_format),
   })
   .required();
-export type checkSchema = yup.InferType<typeof emailSchema>;
-const Login = () => {
-  const router = useRouter();
+export type LoginSchema = yup.InferType<typeof sessionSchema>;
 
-  console.log('rer',router.query);
-  
-  const { register, handleSubmit } = useForm<LoginInput>({
-    resolver: yupResolver(emailSchema),
-  });
-  const { mutate, isPending } = useMutation({
-    mutationFn: emailCheck,
-  });
+const AuthLogin =async () => {
+    const router=useRouter()
+    const {email, session_id}=router.query
 
-  const handleEmail = (data: checkSchema) => {
-    mutate(
-      { ...data },
-      {
-        onSuccess: (resp) => {
-          if (resp.data.code === 200){ 
-          console.log('ss', resp);
+    const {register, handleSubmit}=useForm<LoginInput>({
+        resolver: yupResolver(sessionSchema)
+    })
+
+
+    let sessiondata=null;
+    let body=null
+    if (router.query){
+        body: {
+            email: email
+            token: session_id
+        }
+    }
+    let {data: auth_data}= await axiosInstance.post(
+        endpoints.auth.getUser, 
+        body
+    )
+    const {mutate, data, isPending}=useMutation({
+        mutationFn: loginMutation
+    })
+
+    const getprofile= localStorage.getItem('profilelink')
+    
+    
+      const handleLogin = (data: LoginSchema) => {
+        mutate(
+          { ...data },
+          {
+            onSuccess: (resp) => {
+              if (resp.data.code === 200){ 
+              console.log('ss', resp);
+              
+              toast.success(resp.data.message);
+              
+              router.push('/')
+              }
+              else {
+                console.log(resp.data, 'err');
+                toast.error(resp.data.validation_errors)
+              }
+            },
           
-          toast.success(resp.data.message);
-          localStorage.setItem('session', JSON.stringify(resp.data))
-          localStorage.setItem('profilelink', JSON.stringify('https://yoursaturn.com/auth-confirm?session_id=nuzu5LUF1r2qVBMLiKOc&email=xyzabc@yopmail.com'))
-          
-          router.push('/auth/sessionlogin')
-
           }
-          else {
-            console.log(resp.data, 'err');
-            toast.error(resp.data.validation_errors)
-          }
-        },
-      
-      }
-    );
-  };
+        );
+      };
 
   return (
     <Wrapper>
-      <div>
         <section
           style={{
             height: 800,
@@ -92,7 +103,7 @@ const Login = () => {
             <Typography
               sx={{ textAlign: "center", fontSize: "46px", color: "#394F67" }}
             >
-              <strong>
+              Session <strong>
                 <i>Login</i>
               </strong>{" "}
               To Your <br />
@@ -123,7 +134,7 @@ const Login = () => {
             <Box
               component={"form"}
               sx={{ my: 4, ml: 3 }}
-              onSubmit={handleSubmit(handleEmail)}
+              onSubmit={handleSubmit(handleLogin)}
             >
               <div style={{ borderBottom: "15px" }}>
                 <label style={{ color: "#617C9D" }}>
@@ -164,7 +175,6 @@ const Login = () => {
                   color="primary"
                   fullWidth
                   sx={{ mt: 3, p: 2 }}
-                  onClick={()=>router.push('/auth/sessionlogin')}
                 >
                   Log In
                 </Button>
@@ -197,9 +207,11 @@ const Login = () => {
             </Typography>
           </Box>
         </section>
-      </div>
-    </Wrapper>
-  );
-};
+    <Container>
 
-export default Login;
+    </Container>
+    </Wrapper>
+  )
+}
+
+export default AuthLogin

@@ -18,9 +18,9 @@ export const emailCheck = async (body: LoginInput )=>{
   );
   return resp;
 }
-export const loginMutation = async (body: IFormInput) => {
-  const res = await axiosInstance.post<IgetSignUpQuery>(
-    endpoints.auth.login,
+export const loginMutation = async (body: LoginInput) => {
+  const res = await axiosInstance.post(
+    endpoints.auth.getUser,
     body
   );
   return res;

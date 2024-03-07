@@ -15,7 +15,7 @@ import React from "react";
 import * as yup from "yup";
 import emailRegex from "@/lib/regex/index";
 import InputFieldCommon from "@/ui/CommonInput/CommonInput";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ const style = {
 
 const schema = yup
   .object({
-    full_name: yup.string().required(validationText.error.fullName),
+    full_name: yup.string().required(validationText.error.full_name),
     email: yup
       .string()
       .trim()
@@ -58,10 +58,10 @@ const schema = yup
     birth_hour: yup.number().required(),
     birth_minute: yup.number().required(),
     birth_meridian: yup.string().required(),
-    birth_place: yup.string().required(validationText.error.enter_password),
+    birth_place: yup.string().required(validationText.error.birth_place),
     current_location: yup
       .string()
-      .required(validationText.error.enter_password),
+      .required(validationText.error.current_location), 
     lat: yup.number().required(),
     lon: yup.number().required(),
   })
@@ -69,16 +69,16 @@ const schema = yup
 
 export type RegSchema = yup.InferType<typeof schema>;
 
-const hours=[]
+const hours = [];
 
-for (let i=1; i<13; i++){
-  hours.push(i)
+for (let i = 1; i < 13; i++) {
+  hours.push(i);
 }
 
-const minutes: number[]=[]
+let minutes: number[] = [];
 
-for (let i=1; i<61; i++){
-  minutes.push(i)
+for (let i = 1; i < 61; i++) {
+  minutes.push(i);
 }
 
 const Signup = () => {
@@ -86,7 +86,8 @@ const Signup = () => {
 
   const {
     register,
-    handleSubmit, control,
+    handleSubmit,
+    control,
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: yupResolver(schema),
@@ -96,7 +97,7 @@ const Signup = () => {
     mutationFn: signUpMutation,
   });
 
-  const handleReg = (data: RegSchema) => {
+  const handleReg: SubmitHandler<IFormInput> = (data) => {
     console.log("signup", data);
     mutate(
       { ...data },
@@ -178,13 +179,13 @@ const Signup = () => {
                   Your Name*
                 </label>
                 <InputFieldCommon
-                  required
                   type="text"
                   placeholder="Full Name"
                   sx={{
                     my: 1,
                   }}
                   {...register("full_name")}
+                  helperText={errors.full_name?.message}
                 />
               </Box>
               <Box sx={{ px: 6 }}>
@@ -192,13 +193,11 @@ const Signup = () => {
                   Your Email Address*
                 </label>
                 <InputFieldCommon
-                  required
                   type="email"
                   placeholder="Email Address"
-                  sx={{
-                    my: 1,
-                  }}
+                  sx={{ my: 1 }}
                   {...register("email")}
+                  helperText={errors.email?.message}
                 />
               </Box>
               <Box
@@ -243,7 +242,6 @@ const Signup = () => {
                     )}
                   /> */}
                   <InputFieldCommon
-                    required
                     type="number"
                     placeholder="Birth_year"
                     sx={{
@@ -251,6 +249,7 @@ const Signup = () => {
                       width: "30%",
                     }}
                     {...register("birth_year")}
+                    
                   />
                 </div>
 
@@ -260,7 +259,6 @@ const Signup = () => {
                   </label>
                   <br />
                   <InputFieldCommon
-                    required
                     type="number"
                     placeholder="Birth_month"
                     sx={{
@@ -276,7 +274,6 @@ const Signup = () => {
                   </label>
                   <br />
                   <InputFieldCommon
-                    required
                     type="number"
                     placeholder="Birth_Date"
                     sx={{
@@ -301,7 +298,6 @@ const Signup = () => {
                   </label>
                   <br />
                   <InputFieldCommon
-                    required
                     type="number"
                     placeholder="Birth_hour"
                     sx={{
@@ -311,13 +307,13 @@ const Signup = () => {
                     {...register("birth_hour")}
                   />
                 </div>
-                {/* <div>
+                <div>
                   <label htmlFor="" style={{ color: "#6185AE" }}>
                     Birth Minute*
                   </label>
                   <br />
                   <InputFieldCommon
-                    required
+                    
                     type="number"
                     placeholder="Birth_minute"
                     sx={{
@@ -326,8 +322,8 @@ const Signup = () => {
                     }}
                     {...register("birth_minute")}
                   />
-                </div> */}
-                <div>
+                </div>
+                {/* <div>
                 <label htmlFor="" style={{ color: "#6185AE" }}>
                     Birth Minute*
                   </label>
@@ -340,17 +336,19 @@ const Signup = () => {
                       <Select
                         style={{
                           width: "17vw",
-                          backgroundColor: "#f2f2f2",
+                          // backgroundColor: "white",
                           color: "black",
                         }}
                         inputProps={{ "aria-label": "Without label" }}
                         {...field}
-                        {...register("birth_minute")}
+                        onChange={(e)=>console.log(e.target.value)
+                        }
+                        // {...register("birth_minute")}
                       >
                         <MenuList style={{maxHeight: 200, overflowY:'auto'}}>
 
                         {minutes.map((item) => (
-                          <MenuItem key={item} value={item}>
+                          <MenuItem value={item} sx={{color:'black'}}>
                             {item}
                           </MenuItem>
                         ))}
@@ -359,14 +357,13 @@ const Signup = () => {
                       </Select>
                     )}
                   />
-                </div>
+                </div> */}
                 <div>
                   <label htmlFor="" style={{ color: "#6185AE" }}>
                     Birth Meridian*
                   </label>
                   <br />
                   <InputFieldCommon
-                    required
                     type="text"
                     placeholder="Birth_meridian"
                     sx={{
@@ -382,27 +379,30 @@ const Signup = () => {
                   Birth Place*
                 </label>
                 <InputFieldCommon
-                  required
                   type="text"
                   placeholder="Birth_place"
                   sx={{
                     my: 1,
                   }}
                   {...register("birth_place")}
+                  helperText={errors.birth_place?.message}
                 />
+                
               </Box>
               <Box sx={{ px: 6 }}>
                 <label htmlFor="" style={{ color: "#6185AE" }}>
                   Current Location*
                 </label>
                 <InputFieldCommon
-                  required
+                  
                   type="text"
                   placeholder="Current_location"
                   sx={{
                     my: 1,
                   }}
                   {...register("current_location")}
+                  error={Boolean(errors.current_location)}
+                  helperText={errors.current_location?.message}
                 />
               </Box>
               <Box sx={{ px: 6 }}>
@@ -410,13 +410,14 @@ const Signup = () => {
                   Password*
                 </label>
                 <InputFieldCommon
-                  required
+                  
                   type="password"
                   placeholder="Password"
                   sx={{
                     my: 1,
                   }}
                   {...register("password")}
+                  helperText={errors.password?.message}
                 />
               </Box>
               <Box sx={{ px: 6 }}>
@@ -424,7 +425,7 @@ const Signup = () => {
                   Latitude*
                 </label>
                 <InputFieldCommon
-                  required
+                  
                   type="number"
                   placeholder="Latitude"
                   sx={{
@@ -438,13 +439,14 @@ const Signup = () => {
                   Longitude*
                 </label>
                 <InputFieldCommon
-                  required
+                  
                   type="number"
                   placeholder="Longitude"
                   sx={{
                     my: 1,
                   }}
                   {...register("lon")}
+                  
                 />
               </Box>
               <Box sx={{ m: "auto", textAlign: "center" }}>
